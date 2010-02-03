@@ -1,3 +1,12 @@
+# 1.18
+
+* Fixed a bug where if a single MT install runs multiple domains, and if each of those domains has Cleansweep set up, the Cleansweep Dashboard widget would incorrectly report the broken links of only the first blog/domain in the system.
+* Fixed a bug where the Display Options (on the listing screen) wouldn't be used.
+
+# 1.17
+
+?
+
 # Changes between 1.1 and 1.16
 
 * 404 pages now properly return a status code of 404, when MT can
