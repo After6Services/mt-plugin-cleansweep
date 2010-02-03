@@ -176,7 +176,7 @@ sub list_404 {
     my %param = @_;
 
     my $author    = $app->user;
-    my $list_pref = $app->list_pref('404');
+#    my $list_pref = $app->list_pref('404');
 
     my $base = $app->blog->site_url;
     my $date_format          = "%Y.%m.%d";
@@ -190,25 +190,25 @@ sub list_404 {
 #        my $ts = $row->{created_on};
 #        $row->{date} = relative_date($ts, time);
 
-	my $map;
-	if ($obj->mapping) {
-	    ($map) = ($obj->mapping =~ /$base(.*)/);
-	}
-	$row->{uri_long} = encode_html($obj->uri);
-	$row->{id} = $obj->id;
-	$row->{return_code} = $obj->return_code;
-	$row->{map_full} = $obj->mapping;
-	$row->{map} = $map || "<em>" . $app->translate("None") . "</em>";
-	$row->{is_mapped} = ($obj->return_code ne "");
-	$row->{all_time} = $obj->all_time_occur;
-	$row->{count} = $obj->occur;
+    	my $map;
+    	if ($obj->mapping) {
+    	    ($map) = ($obj->mapping =~ /$base(.*)/);
+    	}
+    	$row->{uri_long} = encode_html($obj->uri);
+    	$row->{id} = $obj->id;
+    	$row->{return_code} = $obj->return_code;
+    	$row->{map_full} = $obj->mapping;
+    	$row->{map} = $map || "<em>" . $app->translate("None") . "</em>";
+    	$row->{is_mapped} = ($obj->return_code ne "");
+    	$row->{all_time} = $obj->all_time_occur;
+    	$row->{count} = $obj->occur;
 
-	if ($obj->mapping) { $row->{return_code} = "301"; }
-	my $uri_short = $obj->uri;
-	if (length($uri_short) > 50) {
-	    $uri_short =~ s/.*(.{50})$/\1/;
-	    $row->{uri_short} = $uri_short;
-	}
+    	if ($obj->mapping) { $row->{return_code} = "301"; }
+    	my $uri_short = $obj->uri;
+    	if (length($uri_short) > 50) {
+    	    $uri_short =~ s/.*(.{50})$/\1/;
+    	    $row->{uri_short} = $uri_short;
+    	}
         if ( my $ts = $obj->last_requested ) {
 	    $row->{created_on_formatted} =
 		format_ts( $date_format, $ts, $app->blog, $app->user ? $app->user->preferred_language : undef );
@@ -224,8 +224,8 @@ sub list_404 {
     );
 
     my %args = (
-		limit => $list_pref->{rows},
-		offset => $app->param('offset') || 0,
+#		limit => $list_pref->{rows},
+#		offset => $app->param('offset') || 0,
 		sort => 'occur',
 		direction => 'descend',
     );
@@ -238,7 +238,7 @@ sub list_404 {
     );
     my $plugin = instance();
     $app->listing({
-        type     => 'cleansweep.log',
+        type     => 'cleansweep_log',
         terms    => \%terms,
         args     => \%args,
         listing_screen => 1,

@@ -10,8 +10,13 @@
     </mt:if>
 </mt:setvarblock>
 </mt:ignore>
+
+<mt:SetVarBlock name="html_body_footer">
+    <mt:Include name="include/display_options.tmpl">
+</mt:SetVarBlock>
+
 <mt:setvarblock name="related_content">
-    <mt:include name="include/display_options.tmpl" />
+<mt:Ignore>    <mt:include name="include/display_options.tmpl" /></mt:Ignore>
     <mtapp:PageActions />
 </mt:setvarblock>
 <mt:setvarblock name="html_head" append="1">
@@ -21,7 +26,7 @@
     function init()
     {
     	// setup
-    	tableSelect = new TC.TableSelect( "cleansweep.log-listing-table" );
+    	tableSelect = new TC.TableSelect( "cleansweep_log-listing-table" );
     	tableSelect.rowSelect = true;
     }
     TC.attachLoadEvent( init );
@@ -46,18 +51,18 @@
 </mt:setvarblock>
 <mt:setvarblock name="action_buttons">
     <a href="javascript:void(0)"
-        onclick="if (confirm('Reset selected 404s?')) doForMarkedInThisWindow(getByID('cleansweep.log-listing-form'), '<__trans phrase="404">', '<__trans phrase="404s">', 'id', 'itemset_reset_404s'); return false"
+        onclick="if (confirm('Reset selected 404s?')) doForMarkedInThisWindow(getByID('cleansweep_log-listing-form'), '<__trans phrase="404">', '<__trans phrase="404s">', 'id', 'itemset_reset_404s'); return false"
         accesskey="r"
         title="<__trans phrase="Reset selected 404s (r)">"
         ><__trans phrase="Reset "></a>
     <a href="javascript:void(0)"
-        onclick="if (confirm('Clear selected 404s?')) doForMarkedInThisWindow(getByID('cleansweep.log-listing-form'), '<__trans phrase="404">', '<__trans phrase="404s">', 'id', 'itemset_delete_404s'); return false"
+        onclick="if (confirm('Clear selected 404s?')) doForMarkedInThisWindow(getByID('cleansweep_log-listing-form'), '<__trans phrase="404">', '<__trans phrase="404s">', 'id', 'itemset_delete_404s'); return false"
         accesskey="d"
         title="<__trans phrase="Clear selected 404s (h)">"
         ><__trans phrase="Clear"></a>
 </mt:setvarblock>
 <$mt:include name="include/header.tmpl"$>
-<mtapp:listing type="cleansweep.log">
+<mtapp:listing type="cleansweep_log">
     <mt:if name="__first__">
     <thead>
         <tr>
