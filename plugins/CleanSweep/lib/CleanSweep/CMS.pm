@@ -147,7 +147,7 @@ sub widget_links {
 		   limit => 10,
 	       };
     my $terms = {};
-    $terms->{blog_id} => $app->blog->id if $app->blog;
+    $terms->{blog_id} = $app->blog->id if $app->blog;
     my @links = CleanSweep::Log->load( $terms, $args );
     my @link_loop;
     my $count = 0;
