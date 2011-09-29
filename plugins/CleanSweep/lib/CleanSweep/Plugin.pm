@@ -6,17 +6,14 @@
 package CleanSweep::Plugin;
 use strict;
 
-sub instance {
-    MT->component('CleanSweep');
-}
-
 sub _read_config {
     my ($blog_id,$options) = @_;
+    my $plugin = MT->component('CleanSweep');
+
     $options = {} if !defined($options);
     require MT::Request;
     my $config = MT::Request->instance->stash('CleanSweepConfig');
     return $config if (defined($config));
-    my $plugin = instance();
     $config = $plugin->get_config_hash('blog:'.$blog_id);
     MT::Request->instance->stash('CleanSweepConfig',$config);
     return $config;

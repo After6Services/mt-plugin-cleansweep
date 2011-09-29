@@ -35,8 +35,8 @@ __PACKAGE__->install_properties({
 sub increment {
     my $obj = shift;
     if (!$obj->all_time_occur) {
-    $obj->occur(0);
-    $obj->all_time_occur(0);
+        $obj->occur(0);
+        $obj->all_time_occur(0);
     } 
     $obj->occur( $obj->occur + 1 );
     $obj->all_time_occur( $obj->all_time_occur + 1 );
