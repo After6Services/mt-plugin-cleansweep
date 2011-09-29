@@ -71,3 +71,7 @@ list_filters:
             label: 'Mapped URIs'
             order: 200
             handler: CleanSweep::CMS::filter_mapped_uris
+        recently_logged:
+            label: 'Recently Logged'
+            order: 300
+            handler: CleanSweep::CMS::filter_recently_logged

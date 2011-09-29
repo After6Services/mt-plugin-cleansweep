@@ -274,6 +274,14 @@ sub filter_mapped_uris {
     $terms->{mapping} = { not => '' };
 }
 
+# The QuickFilter "Recently Logged" option lists entries objects with the most
+# recently logged first.
+sub filter_recently_logged {
+    my ( $terms, $args ) = @_;
+    $args->{sort} = 'last_requested';
+    $args->{direction} = 'descend';
+}
+
 sub reset {
     my $app = shift;
     my $param;
