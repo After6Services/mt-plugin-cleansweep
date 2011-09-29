@@ -21,7 +21,7 @@ sub id { 'cleansweep_cms' }
 
 sub report {
     my $app = shift;
-    my $q = $app->{query};
+    my $q = $app->query;
     my $blog = $app->blog;
 
     my $host = 'http://' . $ENV{'HTTP_HOST'} . $ENV{'REQUEST_URI'};
@@ -161,7 +161,7 @@ sub widget_links {
 	};
 	my $uri_short = $l->uri;
 	if (length($uri_short) > 30) {
-	    $uri_short =~ s/.*(.{30})$/\1/;
+	    $uri_short =~ s/.*(.{30})$/$1/;
 	    $row->{uri_short} = $uri_short;
 	}
 	push @link_loop, $row;
@@ -174,6 +174,7 @@ sub widget_links {
 sub list_404 {
     my $app = shift;
     my %param = @_;
+    my $q = $app->query;
 
     my $author    = $app->user;
 #    my $list_pref = $app->list_pref('404');
@@ -199,14 +200,15 @@ sub list_404 {
     	$row->{return_code} = $obj->return_code;
     	$row->{map_full} = $obj->mapping;
     	$row->{map} = $map || "<em>" . $app->translate("None") . "</em>";
-    	$row->{is_mapped} = ($obj->return_code ne "");
+        # is_mapped is set to true/false based on the object's return_code.
+    	$row->{is_mapped} = $obj->return_code;
     	$row->{all_time} = $obj->all_time_occur;
     	$row->{count} = $obj->occur;
 
     	if ($obj->mapping) { $row->{return_code} = "301"; }
     	my $uri_short = $obj->uri;
     	if (length($uri_short) > 50) {
-    	    $uri_short =~ s/.*(.{50})$/\1/;
+    	    $uri_short =~ s/.*(.{50})$/$1/;
     	    $row->{uri_short} = $uri_short;
     	}
         if ( my $ts = $obj->last_requested ) {
@@ -231,10 +233,10 @@ sub list_404 {
     );
 
     my %params = (
-                  'map_saved' => $app->{query}->param('map_saved') == 1,
-                  'uri_reset' => $app->{query}->param('uri_reset') == 1,
-                  'nav_404' => 1,
-                  'list_noncron' => 1,
+        'map_saved'    => $q->param('map_saved') || '0',
+        'uri_reset'    => $q->param('uri_reset') || '0',
+        'nav_404'      => 1,
+        'list_noncron' => 1,
     );
     my $plugin = instance();
     $app->listing({
@@ -251,7 +253,7 @@ sub list_404 {
 sub reset {
     my $app = shift;
     my $param;
-    my $q = $app->{query};
+    my $q = $app->query;
     require CleanSweep::Log;
     my $link = CleanSweep::Log->load($q->param('id'));
     if ($link) { $link->reset(); }
@@ -277,7 +279,7 @@ sub itemset_reset_404s {
 
 sub delete {
     my $app = shift;
-    my $q = $app->{query};
+    my $q = $app->query;
     my $link = CleanSweep::Log->load($q->param('id'));
     if ($link) { $link->remove(); }
     my $cgi = $app->{cfg}->CGIPath . $app->{cfg}->AdminScript;
@@ -303,7 +305,7 @@ sub itemset_delete_404s {
 sub save_map {
     my $app = shift;
     my $param;
-    my $q = $app->{query};
+    my $q = $app->query;
     require CleanSweep::Log;
     my $link = CleanSweep::Log->load($q->param('id'));
     unless ($link) { 
@@ -323,7 +325,7 @@ sub save_map {
 sub map {
     my $app = shift;
     my ($param) = @_;
-    my $q = $app->{query};
+    my $q = $app->query;
 
     $param ||= {};
 
@@ -340,13 +342,13 @@ sub map {
     $param->{blog_id}     = $app->blog->id;
     $param->{map}         = $link->mapping;
     $param->{return_code} = $link->return_code || "301";
-    $param->{is_mapped}   = ($link->return_code ne "" || $link->mapping ne ""),
+    $param->{is_mapped}   = ($link->return_code || $link->mapping),
     return $app->load_tmpl( 'dialog/map.tmpl', $param );
 }
 
 sub rules {
     my $app = shift;
-    my $q = $app->{query};
+    my $q = $app->query;
 
     my $param ||= {};
 
@@ -362,17 +364,25 @@ sub rules {
     my @links = CleanSweep::Log->load( { blog_id => $app->blog->id }, $args );
     my @link_loop;
     foreach my $l (@links) {
-	my $row = {
-	    id   => $l->id,
-	    uri  => $l->uri,
-	    map  => $l->mapping,
-	    code => $l->return_code || "301",
-	    has_mapping => $l->return_code ne '' || $l->mapping ne '', 
-	};
-	if ($l->return_code eq "410") { $row->{redir_code} = "G"; } 
-	elsif ($l->return_code eq "403") { $row->{redir_code} = "F"; } 
-	elsif ($l->mapping) { $row->{redir_code} = "R=301"; }  
-	push @link_loop, $row;
+    	my $row = {
+    	    id          => $l->id,
+    	    uri         => $l->uri,
+    	    map         => $l->mapping,
+    	    code        => $l->return_code || "301",
+    	    has_mapping => $l->return_code || $l->mapping, 
+    	};
+
+    	if ( $l->return_code && $l->return_code == 410 ) {
+    	    $row->{redir_code} = "G"; 
+    	}
+    	elsif ( $l->return_code && $l->return_code == 403 ) {
+    	    $row->{redir_code} = "F";
+    	}
+    	elsif ( $l->mapping ) {
+    	    $row->{redir_code} = "R=301";
+    	}
+
+    	push @link_loop, $row;
     }
     $param->{object_loop} = \@link_loop;
 
