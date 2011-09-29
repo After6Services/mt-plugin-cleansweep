@@ -186,6 +186,9 @@ sub list_404 {
     # my $list_pref = $app->list_pref('404');
 
     my $base = $app->blog->site_url;
+    # Add the trailing slash, if needed.
+    $base =~ s!(.*?)\/?$!$1\/!;
+
     my $date_format     = "%Y.%m.%d";
     my $datetime_format = "%Y-%m-%d %H:%M:%S";
 
