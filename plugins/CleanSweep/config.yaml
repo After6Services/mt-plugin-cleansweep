@@ -58,4 +58,15 @@ applications:
         mode: 'list_404s'
         view: blog
 
+list_filters:
+  cleansweep_log:
+    all_uris:
+      label: 'All URIs'
+      order: 100
+      handler: $CleanSweep::CleanSweep::CMS::filter_all_uris
+    mapped_uris:
+      label: 'Mapped URIs'
+      order: 200
+      handler: $CleanSweep::CleanSweep::CMS::filter_mapped_uris
+
 

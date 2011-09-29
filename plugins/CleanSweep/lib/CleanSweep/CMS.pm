@@ -250,6 +250,18 @@ sub list_404 {
     });
 }
 
+# The QuickFilter "All URIs" option is an unfiltered list view.
+sub filter_all_uris {
+    my ( $terms, $args ) = @_;
+}
+
+# The QuickFilter "Mapped URIs" option that filters the list view to see only
+# those objects that have been mapped.
+sub filter_mapped_uris {
+    my ( $terms, $args ) = @_;
+    $terms->{mapping} = { not => '' };
+}
+
 sub reset {
     my $app = shift;
     my $param;
@@ -322,6 +334,8 @@ sub save_map {
     $app->redirect("$cgi?__mode=list_404s&blog_id=".$app->blog->id."&map_saved=1");
 }
 
+# Clicking the "map" link causes a popup to appear with the options for how
+# a given URL can be handled.
 sub map {
     my $app = shift;
     my ($param) = @_;
@@ -330,7 +344,11 @@ sub map {
     $param ||= {};
 
     my $blog = $app->blog;
+
     my $base = $blog->site_url;
+    # Add the trailing slash, if needed.
+    $base =~ s!(.*?)\/?$!$1\/!;
+
     require CleanSweep::Log;
     my $link = CleanSweep::Log->load($q->param('id'));
 

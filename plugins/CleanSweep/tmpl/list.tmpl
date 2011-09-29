@@ -17,8 +17,14 @@
 
 <mt:setvarblock name="related_content">
 <mt:Ignore>    <mt:include name="include/display_options.tmpl" /></mt:Ignore>
+    <mtapp:widget
+        id="quickfilters"
+        label="Quickfilters">
+        <mtapp:ListFilters>
+    </mtapp:widget>
     <mtapp:PageActions />
 </mt:setvarblock>
+
 <mt:setvarblock name="html_head" append="1">
     <script type="text/javascript">
     <!--
