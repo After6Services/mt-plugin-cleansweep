@@ -12,20 +12,20 @@ use base qw( MT::Object );
 
 __PACKAGE__->install_properties({
     column_defs => {
-	'id'             => 'integer not null auto_increment', 
-	'blog_id'        => 'integer not null', 
-	'uri'            => 'string(255) not null',
-	'full_uri'       => 'string(255) not null',
-	'occur'          => 'integer not null',
-	'all_time_occur' => 'integer not null',
-	'return_code'    => 'string(5)',
-	'mapping'        => 'string(255)',
-	'last_requested' => 'datetime',
+        'id'             => 'integer not null auto_increment', 
+        'blog_id'        => 'integer not null', 
+        'uri'            => 'string(255) not null',
+        'full_uri'       => 'string(255) not null',
+        'occur'          => 'integer not null',
+        'all_time_occur' => 'integer not null',
+        'return_code'    => 'string(5)',
+        'mapping'        => 'string(255)',
+        'last_requested' => 'datetime',
     },
     indexes => {
-	blog_id => 1,
-	created_on => 1,
-	uri => 1,
+        blog_id => 1,
+        created_on => 1,
+        uri => 1,
     },
     audit => 1,
     datasource => 'cleansweep_log',
@@ -35,8 +35,8 @@ __PACKAGE__->install_properties({
 sub increment {
     my $obj = shift;
     if (!$obj->all_time_occur) {
-	$obj->occur(0);
-	$obj->all_time_occur(0);
+    $obj->occur(0);
+    $obj->all_time_occur(0);
     } 
     $obj->occur( $obj->occur + 1 );
     $obj->all_time_occur( $obj->all_time_occur + 1 );
