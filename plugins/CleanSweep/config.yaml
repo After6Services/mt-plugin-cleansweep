@@ -56,7 +56,7 @@ applications:
                     dialog: 'rewrite_rules'
         menus:
             manage:missing_links:
-                label: '404s'
+                label: 'Logged 404s'
                 order: 4500
                 mode: 'list_404s'
                 view: blog
