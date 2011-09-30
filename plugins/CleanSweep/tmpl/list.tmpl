@@ -62,14 +62,14 @@
         title="<__trans phrase="Reset selected 404s (r)">"
         ><__trans phrase="Reset "></a>
     <a href="javascript:void(0)"
-        onclick="if (confirm('Clear selected 404s?')) doForMarkedInThisWindow(getByID('cleansweep_log-listing-form'), '<__trans phrase="404">', '<__trans phrase="404s">', 'id', 'itemset_delete_404s'); return false"
+        onclick="if (confirm('Delete selected 404 records?')) doForMarkedInThisWindow(getByID('cleansweep_log-listing-form'), '<__trans phrase="404">', '<__trans phrase="404s">', 'id', 'itemset_delete_404s'); return false"
         accesskey="d"
-        title="<__trans phrase="Clear selected 404s (h)">"
-        ><__trans phrase="Clear"></a>
 </mt:setvarblock>
 <$mt:include name="include/header.tmpl"$>
 <mtapp:listing type="cleansweep_log">
     <mt:if name="__first__">
+        title="<__trans phrase="Delete selected 404 records (d)">"
+        ><__trans phrase="Delete"></a>
     <thead>
         <tr>
             <th class="cb"><input type="checkbox" name="id-head" value="all" class="select" /></th>
