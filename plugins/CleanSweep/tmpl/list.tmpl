@@ -1,31 +1,19 @@
 <mt:setvar name="page_title" value="<__trans phrase="Logged 404s">">
-<mt:ignore>
-<mt:setvarblock name="action_buttons">
-    <mt:if name="is_administrator">
-    <a href="javascript:void(0)"
-        onclick="doRemoveItems(getByID('<$mt:var name="object_type"$>-listing-form'), '<__trans phrase="blog" escape="js">', '<__trans phrase="blogs" escape="js">'); return false;"
-        accesskey="x"
-        title="<__trans phrase="Delete selected URIs (x)">"
-        ><__trans phrase="Delete"></a>
-    </mt:if>
-</mt:setvarblock>
-</mt:ignore>
 
 <mt:SetVarBlock name="html_body_footer">
     <mt:Include name="include/display_options.tmpl">
 </mt:SetVarBlock>
 
-<mt:setvarblock name="related_content">
-<mt:Ignore>    <mt:include name="include/display_options.tmpl" /></mt:Ignore>
-    <mtapp:widget
+<mt:SetVarBlock name="related_content">
+    <mtapp:Widget
         id="quickfilters"
         label="Quickfilters">
         <mtapp:ListFilters>
-    </mtapp:widget>
-    <mtapp:PageActions />
-</mt:setvarblock>
+    </mtapp:Widget>
+    <mtapp:PageActions>
+</mt:SetVarBlock>
 
-<mt:setvarblock name="html_head" append="1">
+<mt:SetVarBlock name="html_head" append="1">
     <script type="text/javascript">
     <!--
     var tableSelect;
@@ -38,38 +26,62 @@
     TC.attachLoadEvent( init );
     //-->
     </script> 
-</mt:setvarblock>
-<mt:setvarblock name="system_msg">
-    <mt:if name="uri_reset">
+</mt:SetVarBlock>
+
+<mt:SetVarBlock name="system_msg">
+    <mt:If name="uri_reset">
         <mtapp:statusmsg
             id="message"
             class="success">
             <__trans phrase="The URI you selected has been reset.">
         </mtapp:statusmsg>
-    </mt:if>
-    <mt:if name="map_saved">
+    </mt:If>
+    <mt:If name="map_saved">
         <mtapp:statusmsg
             id="message"
             class="success">
             <__trans phrase="The selected URI has been successfully mapped to a new URL.">
         </mtapp:statusmsg>
-    </mt:if>
-</mt:setvarblock>
-<mt:setvarblock name="action_buttons">
+    </mt:If>
+</mt:SetVarBlock>
+
+<mt:SetVarBlock name="action_buttons">
     <a href="javascript:void(0)"
-        onclick="if (confirm('Reset selected 404s?')) doForMarkedInThisWindow(getByID('cleansweep_log-listing-form'), '<__trans phrase="404">', '<__trans phrase="404s">', 'id', 'itemset_reset_404s'); return false"
+        onclick="if (confirm('Reset selected 404 records?')) doForMarkedInThisWindow(getByID('cleansweep_log-listing-form'), '<__trans phrase="404">', '<__trans phrase="404s">', 'id', 'itemset_reset_404s'); return false"
         accesskey="r"
-        title="<__trans phrase="Reset selected 404s (r)">"
-        ><__trans phrase="Reset "></a>
+        title="<__trans phrase="Reset selected 404 records (r)">"
+        ><__trans phrase="Reset"></a>
     <a href="javascript:void(0)"
         onclick="if (confirm('Delete selected 404 records?')) doForMarkedInThisWindow(getByID('cleansweep_log-listing-form'), '<__trans phrase="404">', '<__trans phrase="404s">', 'id', 'itemset_delete_404s'); return false"
         accesskey="d"
-</mt:setvarblock>
-<$mt:include name="include/header.tmpl"$>
-<mtapp:listing type="cleansweep_log">
-    <mt:if name="__first__">
         title="<__trans phrase="Delete selected 404 records (d)">"
         ><__trans phrase="Delete"></a>
+</mt:SetVarBlock>
+
+<mt:Include name="include/header.tmpl">
+
+<div class="listing-filter">
+    <div class="listing-filter-inner inner pkg">
+        <div class="filter">
+            <div id="filter-title" class="filter-title">
+        <mt:Unless name="filter">
+                <strong>All Logged 404s</strong>
+        <mt:Else>
+            <mt:If name="filter_key">
+                <strong><__trans phrase="Showing only: [_1]" params="<mt:Var name="filter_label">"></strong>
+                <a href="<mt:Var name="script_url">?__mode=<mt:Var name="mode" escape="url"><mt:If name="blog_id">&amp;blog_id=<mt:Var name="blog_id"></mt:If>">[<__trans phrase="Remove filter">]</a>
+            </mt:If>
+        </mt:Unless>
+            </div>
+        </div>
+    </div>
+</div>
+
+<mtapp:Listing 
+    type="cleansweep_log"
+    default="No 404s have been logged."
+    empty_message="No 404s have been logged.">
+    <mt:If name="__first__">
     <thead>
         <tr>
             <th class="cb"><input type="checkbox" name="id-head" value="all" class="select" /></th>
@@ -80,7 +92,7 @@
         </tr>
     </thead>
     <tbody>
-    </mt:if>
+    </mt:If>
         <tr class="<mt:if name="__odd__">odd<mt:else>even</mt:if>">
             <td class="cb"><input type="checkbox" name="id" value="<mt:var name="id">" class="select" /></td>
             <td>
@@ -105,7 +117,7 @@
                 <a href="?__mode=reset_404&id=<mt:var name="id" />&blog_id=<mt:var name="blog_id" />">Reset</a>
             </td>
         </tr>
-    <mt:if name="is_mapped">
+    <mt:If name="is_mapped">
         <tr class="<mt:if name="__odd__">odd<mt:else>even</mt:if>">
             <td>&nbsp;</td>
             <td colspan="4">
@@ -115,9 +127,10 @@
                 <mt:if name="return_code" eq="403">Forbidden</mt:if>
             </td>
         </tr>
-    </mt:if>
-    <mt:if name="__last__">
+    </mt:If>
+    <mt:If name="__last__">
     </tbody>
-    </mt:if>
-</mtapp:listing>
-<$mt:include name="include/footer.tmpl"$>
+    </mt:If>
+</mtapp:Listing>
+
+<mt:Include name="include/footer.tmpl">

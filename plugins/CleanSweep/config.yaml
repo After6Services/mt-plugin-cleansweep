@@ -63,15 +63,11 @@ applications:
 
 list_filters:
     cleansweep_log:
-        all_uris:
-            label: 'All URIs'
-            order: 100
-            handler: CleanSweep::CMS::filter_all_uris
         mapped_uris:
             label: 'Mapped URIs'
-            order: 200
+            order: 100
             handler: CleanSweep::CMS::filter_mapped_uris
         recently_logged:
             label: 'Recently Logged'
-            order: 300
+            order: 200
             handler: CleanSweep::CMS::filter_recently_logged
