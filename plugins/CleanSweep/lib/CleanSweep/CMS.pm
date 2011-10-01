@@ -205,29 +205,28 @@ sub list_404 {
     my $code = sub {
         my ($obj, $row) = @_;
 
-        my $map;
-        if ($obj->mapping) {
-            ($map) = ($obj->mapping =~ /$base(.*)/);
-        }
-
-        $row->{uri_long} = encode_html($obj->uri);
-        $row->{id} = $obj->id;
+        $row->{uri_long}    = encode_html($obj->uri);
+        $row->{id}          = $obj->id;
         $row->{return_code} = $obj->return_code;
-        $row->{map_full} = $obj->mapping;
-        $row->{map} = $map || "<em>" . $app->translate("None") . "</em>";
+        $row->{map}         = $obj->mapping 
+                                || "<em>" . $app->translate("None") . "</em>";
         # is_mapped is set to true/false based on the object's return_code.
-        $row->{is_mapped} = $obj->return_code;
-        $row->{all_time} = $obj->all_time_occur;
-        $row->{count} = $obj->occur;
+        $row->{is_mapped}   = $obj->return_code;
+        $row->{all_time}    = $obj->all_time_occur;
+        $row->{count}       = $obj->occur;
 
         if ($obj->mapping) {
             $row->{return_code} = "301";
         }
+
+        # If the URI is longer than will display on the listing screen, create
+        # a "short" version that will fit.
         my $uri_short = $obj->uri;
         if (length($uri_short) > 50) {
             $uri_short =~ s/.*(.{50})$/$1/;
             $row->{uri_short} = $uri_short;
         }
+
         if ( my $ts = $obj->last_requested ) {
             $row->{created_on_formatted}
                 = format_ts( 
@@ -379,14 +378,16 @@ sub save_map {
     require CleanSweep::Log;
     my $link = CleanSweep::Log->load($q->param('id'));
 
-    unless ($link) { 
+    unless ($link) {
         $link = CleanSweep::Log->new; # this can never happen
     }
 
     $link->map('');
-    $link->return_code($q->param('return_code')); 
+
+    $link->return_code($q->param('return_code'));
+
     if ($q->param('return_code') eq "301") {
-        $link->map($q->param('destination')); 
+        $link->map($q->param('destination'));
     }
     $link->save or return $app->error( $link->errstr );
 
@@ -421,7 +422,7 @@ sub map {
     $param->{blog_id}     = $app->blog->id;
     $param->{map}         = $link->mapping;
     $param->{return_code} = $link->return_code || "301";
-    $param->{is_mapped}   = ($link->return_code || $link->mapping),
+    $param->{is_mapped}   = ($link->return_code || $link->mapping);
 
     return $plugin->load_tmpl( 'dialog/map.tmpl', $param);
 }
