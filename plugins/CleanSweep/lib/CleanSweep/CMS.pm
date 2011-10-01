@@ -15,6 +15,9 @@ use MT::Util qw( encode_html format_ts offset_time_list offset_time epoch2ts
 
 sub id { 'cleansweep_cms' }
 
+# When a server returns a 404, try to handle it intelligently: use a redirect,
+# if set, try to find a likely intended URL, or return the custom 404 page.
+# Lastly, log the 404.
 sub report {
     my $app = shift;
     my $q = $app->query;
@@ -46,19 +49,24 @@ sub report {
 
     # 301 - Moved permanently
     # 302 - Found, but redirect may change
+    # A mapping has been explicitly set for this resource.
     if ($log->mapping) { 
         $redirect = $log->mapping;
         $app->response_code("301");
     }
+    # This resource was specifically set to Permanently Removed (410) or
+    # Forbidden (403).
     elsif ($log->return_code) {
         $app->response_code($log->return_code);
         $redirect = $config->{'404url'};
     }
+    # Try to guess the URL.
     elsif ($redirect = _guess_intended($app,$target)) {
         # do nothing? maybe try to fix permanently?
         # stream the found file to the browser?
         $app->response_code("302");
     }
+    # Give up and just redirect to the custom 404 page.
     elsif ($config->{'404url'}) {
         $log->increment();
         $redirect = $config->{'404url'};
@@ -94,6 +102,8 @@ sub _guess_file_path {
     }
 }
 
+# Try to guess the intended URL. The accessed URL is parsed to try to
+# determine what the intended page might be.
 sub _guess_intended {
     my $app = shift;
     my ($uri) = @_;
