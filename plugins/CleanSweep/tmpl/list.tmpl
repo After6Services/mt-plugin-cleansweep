@@ -96,9 +96,11 @@
         <tr class="<mt:if name="__odd__">odd<mt:else>even</mt:if>">
             <td class="cb"><input type="checkbox" name="id" value="<mt:var name="id">" class="select" /></td>
             <td>
-                <mt:if name="uri_short">...<mt:var name="uri_short" escape="html">
-                <mt:else><mt:var name="uri_long" />
-                </mt:if>
+                <mt:If name="uri_short">
+                    <span title="<mt:Var name="uri_long">">...<mt:Var name="uri_short" escape="html"></span>
+                <mt:Else>
+                    <mt:Var name="uri_long" />
+                </mt:If>
             </td>
             <td><mt:var name="count" escape="html"></td>
             <td>
