@@ -275,11 +275,6 @@ sub list_404 {
     });
 }
 
-# The QuickFilter "All URIs" option is an unfiltered list view.
-sub filter_all_uris {
-    my ( $terms, $args ) = @_;
-}
-
 # The QuickFilter "Mapped URIs" option that filters the list view to see only
 # those objects that have been mapped.
 sub filter_mapped_uris {
@@ -292,6 +287,27 @@ sub filter_mapped_uris {
 sub filter_recently_logged {
     my ( $terms, $args ) = @_;
     $args->{sort} = 'last_requested';
+    $args->{direction} = 'descend';
+}
+
+# This QuickFilter shows 301 redirects
+sub filter_301s {
+    my ( $terms, $args ) = @_;
+    $terms->{return_code} = '301';
+    $args->{direction} = 'descend';
+}
+
+# This QuickFilter shows 410 redirects
+sub filter_410s {
+    my ( $terms, $args ) = @_;
+    $terms->{return_code} = '410';
+    $args->{direction} = 'descend';
+}
+
+# This QuickFilter shows 403 redirects
+sub filter_403s {
+    my ( $terms, $args ) = @_;
+    $terms->{return_code} = '403';
     $args->{direction} = 'descend';
 }
 

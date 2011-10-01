@@ -63,11 +63,23 @@ applications:
 
 list_filters:
     cleansweep_log:
-        mapped_uris:
-            label: 'Mapped URIs'
-            order: 100
-            handler: CleanSweep::CMS::filter_mapped_uris
         recently_logged:
             label: 'Recently Logged'
-            order: 200
+            order: 100
             handler: CleanSweep::CMS::filter_recently_logged
+        mapped_uris:
+            label: 'Mapped URIs'
+            order: 200
+            handler: CleanSweep::CMS::filter_mapped_uris
+        301s:
+            label: '301 Redirects'
+            order: 300
+            handler: CleanSweep::CMS::filter_301s
+        403s:
+            label: '403 Forbidden'
+            order: 301
+            handler: CleanSweep::CMS::filter_403s
+        410s:
+            label: '410 Gone'
+            order: 302
+            handler: CleanSweep::CMS::filter_410s
