@@ -275,10 +275,10 @@ sub list_404 {
 }
 
 # The QuickFilter "Mapped URIs" option that filters the list view to see only
-# those objects that have been mapped.
+# those objects that have been mapped -- whether to another URI or a 410/403.
 sub filter_mapped_uris {
     my ( $terms, $args ) = @_;
-    $terms->{mapping} = { not => '' };
+    $terms->{return_code} = { not => '' };
 }
 
 # The QuickFilter "Recently Logged" option lists entries objects with the most
