@@ -25,6 +25,8 @@ sub report {
 
     my $host = 'http://' . $ENV{'HTTP_HOST'} . $ENV{'REQUEST_URI'};
     my $base = $blog->site_url;
+    # Add the trailing slash, if needed.
+    $base =~ s!(.*?)\/?$!$1\/!;
 
     my ($target) = ($host =~ /$base(.*)/);
 
