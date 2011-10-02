@@ -64,9 +64,10 @@ sub report {
     }
     # Try to guess the URL.
     elsif ($redirect = _guess_intended($app,$target)) {
-        # do nothing? maybe try to fix permanently?
-        # stream the found file to the browser?
-        $app->response_code("302");
+        # A good guess was made about the URL. Save it.
+        $log->mapping($redirect);
+        $log->return_code('301');
+        $app->response_code("301");
     }
     # Give up and just redirect to the custom 404 page.
     elsif ($config->{'404url'}) {
@@ -90,6 +91,8 @@ sub report {
     }
 
     $log->save or return $app->error( $log->errstr );
+
+    # Finally, redirect the user to the selected page -- whatever it may be.
     $app->redirect($redirect);
 }
 
@@ -127,9 +130,13 @@ sub _guess_intended {
     }
 
     # Test 3: look for entry with same basename
-    require MT::Entry;
-    my ($basename,$ext) = ($uri =~ /\/([^\.]*)\.(\w+)$/i);
+    # The URI can contain the filename, or a path and the filename. Examples:
+    # * my-awesome-entry.html
+    # * 2011/10/01/my-awesome-entry.html
+    # We want to get at the basename in either case.
+    my ($path,$basename,$ext) = ($uri =~ /(.*\/)?([^\.]*)\.(\w+)$/i);
     $basename =~ s/-/_/g;
+    require MT::Entry;
     if (my $e = MT::Entry->load({ basename => $basename, blog_id => $blog->id })) {
         my $fi = MT::FileInfo->load({ entry_id => $e->id });
         return $fi->url;
