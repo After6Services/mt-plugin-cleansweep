@@ -122,9 +122,9 @@
     <mt:If name="is_mapped">
         <tr class="<mt:if name="__odd__">odd<mt:else>even</mt:if>">
             <td>&nbsp;</td>
-            <td colspan="4">
+            <td colspan="4" style="color: #999;">
                 Mapped to:
-                <mt:if name="return_code" eq="301"><a href="<mt:BlogURL><mt:Var name="map">"><mt:Var name="map"></a></mt:if>
+                <mt:if name="return_code" eq="301"><a style="color: #999;" href="<mt:BlogURL><mt:Var name="map">"><mt:Var name="map"></a></mt:if>
                 <mt:if name="return_code" eq="410">Permanently Removed</mt:if>
                 <mt:if name="return_code" eq="403">Forbidden</mt:if>
             </td>
