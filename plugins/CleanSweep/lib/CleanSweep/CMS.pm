@@ -64,6 +64,9 @@ sub report {
     }
     # Try to guess the URL.
     elsif ($redirect = _guess_intended($app,$target)) {
+        # We want to record that the URL was not found this one time, but a
+        # redirect was created for future mappings.
+        $log->increment();
         # A good guess was made about the URL. Save it.
         $log->mapping($redirect);
         $log->return_code('301');
