@@ -7,6 +7,8 @@
 package CleanSweep::Log;
 
 use strict;
+use warnings;
+
 use MT::Object;
 use base qw( MT::Object );
 
@@ -28,7 +30,7 @@ __PACKAGE__->install_properties({
         uri        => 1,
     },
     audit       => 1,
-    datasource  => 'cleansweep_log',
+    datasource  => 'cs_log',
     primary_key => 'id',
 });
 
