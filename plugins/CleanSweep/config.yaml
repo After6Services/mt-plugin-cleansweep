@@ -4,11 +4,12 @@ description: 'Clean Sweep is a plugin that helps administrators manage broken li
 author_name: Byrne Reese
 author_link: http://www.majordojo.com/
 plugin_link: http://www.majordojo.com/projects/movable-type/clean-sweep/
-schema_version: 0.17
+schema_version: 4
 version: 1.2.0
 
 object_types:
-    cleansweep_log: CleanSweep::Log
+    cleansweep_log:      CleanSweep::Log
+    cleansweep_referrer: CleanSweep::Referrer
 
 blog_config_template:
     code: CleanSweep::Plugin::blogconf_template

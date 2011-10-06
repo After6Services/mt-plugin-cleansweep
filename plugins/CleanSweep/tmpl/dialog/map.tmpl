@@ -62,6 +62,49 @@
   </div> 
 </mtapp:setting>
 
+<mt:If name="referrers">
+    <mtapp:setting
+        id="uri"
+        label_class="top-label"
+        label="Referrer History">
+
+        <mtapp:Listing loop="referrers">
+            <mt:If name="__first__">
+    <thead>
+        <tr>
+            <th>Referring URI</th>
+            <th>Count</th>
+        </tr>
+    </thead>
+    <tbody>
+            </mt:If>
+
+        <tr class="<mt:if name="__odd__">odd<mt:else>even</mt:if>">
+            <td>
+                <mt:Var name="referrer_uri" count_characters="1" setvar="uri_length">
+                <a href="<mt:Var name="referrer_uri">" 
+                    title="<mt:Var name="referrer_uri">" 
+                    target="_blank">
+                <mt:If name="uri_length" gt="75">
+                    ...<mt:Var name="referrer_uri" regex_replace="/.*(.{75})$/","$1">
+                <mt:Else>
+                    <mt:Var name="referrer_uri">
+                </mt:If>
+                </a>
+            </td>
+            <td>
+                <mt:Var name="count">
+            </td>
+        </tr>
+
+            <mt:If name="__last__">
+    </tbody>
+            </mt:If>
+        </mtapp:Listing>
+
+    </mtapp:setting>
+</mt:If>
+
 <div class="actions-bar">
     <div class="actions-bar-inner pkg actions">
         <button

@@ -48,7 +48,7 @@ sub report {
 
     my $config = CleanSweep::Plugin::_read_config($blog->id);
     my $redirect;
-
+    
     # 301 - Moved permanently
     # 302 - Found, but redirect may change
     # A mapping has been explicitly set for this resource.
@@ -94,6 +94,19 @@ sub report {
     }
 
     $log->save or return $app->error( $log->errstr );
+
+    # Record where the visitor came from (the referrer) so that the MT admin
+    # can have an understanding of where the broken link came from.
+    my $referrer_uri = $ENV{'HTTP_REFERER'};
+    if ( 
+        $referrer_uri
+        && !MT->model('cleansweep_referrer')->exist({ referrer_uri => $referrer_uri }) 
+    ) {
+        my $referrer = MT->model('cleansweep_referrer')->new();
+        $referrer->log_id( $log->id );
+        $referrer->referrer_uri( $referrer_uri );
+        $referrer->save or die $referrer->errstr;
+    }
 
     # Finally, redirect the user to the selected page -- whatever it may be.
     $app->redirect($redirect);
@@ -435,6 +448,9 @@ sub map {
     $param->{map}         = $link->mapping;
     $param->{return_code} = $link->return_code || "301";
     $param->{is_mapped}   = ($link->return_code || $link->mapping);
+    
+    my @referrers = MT->model('cleansweep_referrer')->load({ log_id => $link->id });
+    $param->{referrers} = \@referrers;
 
     return $plugin->load_tmpl( 'dialog/map.tmpl', $param);
 }
