@@ -70,11 +70,15 @@ sub report {
         # A good guess was made about the URL. Save it.
         $log->mapping($redirect);
         $log->return_code('301');
+        $log->save or die $log->errstr;
         $app->response_code("301");
+
+        _track_referrer({ log_id => $log->id, });
     }
     # Give up and just redirect to the custom 404 page.
     elsif ($config->{'404url'}) {
         $log->increment();
+        $log->save or die $log->errstr;
         $redirect = $config->{'404url'};
         my $path = _guess_file_path($app,$target);
         if ($path) {
@@ -83,33 +87,54 @@ sub report {
                 my $contents = <NOTFOUND>;
                 close NOTFOUND;
                 $app->response_code("404");
-                $log->save or return $app->error( $log->errstr );
                 return $contents;
         }
         $app->response_code("404");
+
+        _track_referrer({ log_id => $log->id, });
     }
     else {
+        $log->increment();
+        $log->save or die $log->errstr;
+
+        _track_referrer({ log_id => $log->id, });
+
         $redirect = $app->{cfg}->CGIPath . $app->{cfg}->SearchScript 
             . '?IncludeBlogs=' . $blog->id . '&keyword=' . $target;
     }
 
-    $log->save or return $app->error( $log->errstr );
-
-    # Record where the visitor came from (the referrer) so that the MT admin
-    # can have an understanding of where the broken link came from.
-    my $referrer_uri = $ENV{'HTTP_REFERER'};
-    if ( 
-        $referrer_uri
-        && !MT->model('cleansweep_referrer')->exist({ referrer_uri => $referrer_uri }) 
-    ) {
-        my $referrer = MT->model('cleansweep_referrer')->new();
-        $referrer->log_id( $log->id );
-        $referrer->referrer_uri( $referrer_uri );
-        $referrer->save or die $referrer->errstr;
-    }
 
     # Finally, redirect the user to the selected page -- whatever it may be.
     $app->redirect($redirect);
+}
+
+# Record where the visitor came from (the referrer) so that the MT admin can
+# have an understanding of where the broken link came from.
+sub _track_referrer {
+    my ($arg_ref)    = @_;
+    my $log_id       = $arg_ref->{log_id};
+    my $referrer_uri = $ENV{'HTTP_REFERER'};
+
+    # Give up if no referrer was supplied.
+    return if !$referrer_uri;
+
+    my $referrer = MT->model('cleansweep_referrer')->load({
+        referrer_uri => $referrer_uri,
+    });
+
+    # This referrer was found already; just increment number of occurrences.
+    if ( $referrer ) {
+        my $count = $referrer->count || '1';
+        $referrer->occur( $count++ );
+    }
+    else {
+        $referrer = MT->model('cleansweep_referrer')->new();
+        $referrer->log_id( $log_id );
+        $referrer->referrer_uri( $referrer_uri );
+        $referrer->occur( 1 );
+    }
+
+    $referrer->save or die $referrer->errstr;
 }
 
 sub _guess_file_path {

@@ -11,7 +11,7 @@ __PACKAGE__->install_properties({
         id           => 'integer not null auto_increment', 
         log_id       => 'integer not null', 
         referrer_uri => 'string(255) not null',
-        count        => 'integer not null',
+        occur        => 'integer not null',
     },
     indexes => {
         referrer_uri => 1,
