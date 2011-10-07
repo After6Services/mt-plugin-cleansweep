@@ -42,9 +42,7 @@ applications:
                 code: CleanSweep::CMS::report
                 requires_login: 0
             list_404s:           CleanSweep::CMS::list_404
-            reset_404:           CleanSweep::CMS::reset
             itemset_reset_404s:  CleanSweep::CMS::itemset_reset_404s
-            delete_404:          CleanSweep::CMS::delete
             itemset_delete_404s: CleanSweep::CMS::itemset_delete_404s
             map_404:             CleanSweep::CMS::map
             save_404_map:        CleanSweep::CMS::save_map

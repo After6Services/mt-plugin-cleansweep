@@ -367,20 +367,6 @@ sub filter_umapped_uris {
     $terms->{return_code} = \' IS NULL';
 }
 
-sub reset {
-    my $app = shift;
-    my $param;
-    my $q = $app->query;
-    require CleanSweep::Log;
-    my $link = CleanSweep::Log->load($q->param('id'));
-    if ($link) { 
-        $link->reset();
-    }
-
-    my $cgi = $app->{cfg}->CGIPath . $app->{cfg}->AdminScript;
-    $app->redirect("$cgi?__mode=list_404s&blog_id=".$app->blog->id."&uri_reset=1");
-}
-
 sub itemset_reset_404s {
     my ($app) = @_;
     $app->validate_magic or return;
@@ -396,18 +382,6 @@ sub itemset_reset_404s {
 
     my $cgi = $app->{cfg}->CGIPath . $app->{cfg}->AdminScript;
     $app->redirect("$cgi?__mode=list_404s&blog_id=".$app->blog->id."&uri_reset=1");
-}
-
-sub delete {
-    my $app = shift;
-    my $q = $app->query;
-    my $link = CleanSweep::Log->load($q->param('id'));
-    if ($link) {
-        $link->remove();
-    }
-
-    my $cgi = $app->{cfg}->CGIPath . $app->{cfg}->AdminScript;
-    $app->redirect("$cgi?__mode=list_404s&blog_id=".$app->blog->id."&uri_delete=1");
 }
 
 sub itemset_delete_404s {
