@@ -394,6 +394,16 @@ sub itemset_delete_404s {
     LINK: for my $link (@links) {
         my $link = CleanSweep::Log->load($link)
           or next LINK;
+
+        # Remove any referrers for this 404.
+        my @referrers = MT->model('cleansweep_referrer')->load({
+            log_id => $link->id,
+        });
+        foreach my $referrer (@referrers) {
+            $referrer->remove();
+        }
+
+        # Remove this 404.
         $link->remove();
     }
 

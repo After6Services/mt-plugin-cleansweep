@@ -52,6 +52,14 @@ sub reset {
     my $obj = shift;
     $obj->occur(0);
     $obj->save;
+
+    # Reset any referrers for this 404, also.
+    my @referrers = MT->model('cleansweep_referrer')->load({
+        log_id => $link->id,
+    });
+    foreach my $referrer (@referrers) {
+        $referrer->occur(0);
+    }
 }
 
 sub map {
