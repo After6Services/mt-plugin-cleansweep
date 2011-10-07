@@ -84,3 +84,7 @@ list_filters:
             label: '410 Gone'
             order: 302
             handler: CleanSweep::CMS::filter_410s
+        unmapped_uris:
+            label: 'Unmapped URIs'
+            order: 400
+            handler: CleanSweep::CMS::filter_umapped_uris

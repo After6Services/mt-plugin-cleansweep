@@ -328,7 +328,7 @@ sub list_404 {
 # those objects that have been mapped -- whether to another URI or a 410/403.
 sub filter_mapped_uris {
     my ( $terms, $args ) = @_;
-    $terms->{return_code} = { not => '' };
+    $terms->{return_code} = { not_null => 1 };
 }
 
 # The QuickFilter "Recently Logged" option lists entries objects with the most
@@ -358,6 +358,12 @@ sub filter_403s {
     my ( $terms, $args ) = @_;
     $terms->{return_code} = '403';
     $args->{direction} = 'descend';
+}
+
+# This QuickFilter will show any 404s that haven't been mapped yet.
+sub filter_umapped_uris {
+    my ( $terms, $args ) = @_;
+    $terms->{return_code} = \' IS NULL';
 }
 
 sub reset {
