@@ -307,10 +307,11 @@ sub list_404 {
     );
 
     my %params = (
-        'map_saved'    => $q->param('map_saved') || '0',
-        'uri_reset'    => $q->param('uri_reset') || '0',
-        'nav_404'      => 1,
-        'list_noncron' => 1,
+        map_saved    => $q->param('map_saved') || '0',
+        uri_reset    => $q->param('uri_reset') || '0',
+        uri_delete   => $q->param('uri_delete') || '0',
+        nav_404      => 1,
+        list_noncron => 1,
     );
 
     $app->listing({
