@@ -55,7 +55,7 @@ sub reset {
 
     # Reset any referrers for this 404, also.
     my @referrers = MT->model('cleansweep_referrer')->load({
-        log_id => $link->id,
+        log_id => $obj->id,
     });
     foreach my $referrer (@referrers) {
         $referrer->occur(0);
