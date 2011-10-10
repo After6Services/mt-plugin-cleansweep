@@ -122,8 +122,11 @@
             </mt:if>
             </td>
             <td nowrap="nowrap">
-                <a href="javascript:void(0)" onclick="openDialog(null,'map_404','&id=<mt:var name="id" />&blog_id=<mt:var name="blog_id" />'); return false">Map</a> |
-                <a href="?__mode=reset_404&id=<mt:var name="id" />&blog_id=<mt:var name="blog_id" />">Reset</a>
+                <a href="javascript:void(0)" 
+                    onclick="openDialog(null,'map_404','&amp;id=<mt:Var name="id">&amp;blog_id=<mt:Var name="blog_id">&amp;return_to=' + encodeURIComponent(document.URL)); return false">
+                    Map</a> |
+                <a href="?__mode=reset_404&amp;id=<mt:Var name="id">&amp;blog_id=<mt:Var name="blog_id">&amp;&return_to=' + encodeURIComponent(document.URL)">
+                    Reset</a>
             </td>
         </tr>
     <mt:If name="is_mapped">

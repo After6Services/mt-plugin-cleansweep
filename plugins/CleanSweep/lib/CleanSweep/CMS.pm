@@ -432,8 +432,9 @@ sub save_map {
     }
     $link->save or return $app->error( $link->errstr );
 
-    my $cgi = $app->{cfg}->CGIPath . $app->{cfg}->AdminScript;
-    $app->redirect("$cgi?__mode=list_404s&blog_id=".$app->blog->id."&map_saved=1");
+    #my $cgi = $app->{cfg}->CGIPath . $app->{cfg}->AdminScript;
+    #$app->redirect("$cgi?__mode=list_404s&blog_id=".$app->blog->id."&map_saved=1");
+    $app->redirect( $q->param('return_to') . '&map_saved=1');
 }
 
 # Clicking the "map" link causes a popup to appear with the options for how
@@ -464,6 +465,7 @@ sub map {
     $param->{map}         = $link->mapping;
     $param->{return_code} = $link->return_code || "301";
     $param->{is_mapped}   = ($link->return_code || $link->mapping);
+    $param->{return_to}   = $q->param('return_to');
     
     my @referrers = MT->model('cleansweep_referrer')->load({ log_id => $link->id });
     $param->{referrers} = \@referrers;
