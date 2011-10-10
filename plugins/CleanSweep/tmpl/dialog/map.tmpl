@@ -3,7 +3,7 @@
 <link rel="stylesheet" href="<mt:var name="static_uri">plugins/CleanSweep/styles/app.css" type="text/css" />
 </mt:setvarblock>
 <mt:include name="dialog/header.tmpl">
-<form method="post" action="<mt:var name="script_url">" target="_top">
+<form method="post" action="<mt:var name="script_url">" id="404_map" target="_top">
 <input type="hidden" name="__mode" value="save_404_map" />
 <input type="hidden" name="blog_id" value="<mt:var name="blog_id">" />
 <input type="hidden" name="id" value="<mt:var name="id">" />
@@ -108,6 +108,7 @@
 <div class="actions-bar">
     <div class="actions-bar-inner pkg actions">
         <button
+            onclick="document.forms['404_map'].submit();"
             type="submit"
             accesskey="s"
             title="<__trans phrase="Continue">"
