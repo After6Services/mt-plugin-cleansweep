@@ -30,3 +30,9 @@
 .radio,
 .radio-label { float: left; }
 .radio { padding: 2px 5px 0px 0px; } 
+
+td.extra,
+td.extra a {
+    font-size: 0.85em;
+    color: #777;
+}
