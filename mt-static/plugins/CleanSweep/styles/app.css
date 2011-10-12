@@ -31,6 +31,12 @@
 .radio-label { float: left; }
 .radio { padding: 2px 5px 0px 0px; } 
 
+#uri-field .listing {
+    height: 185px; 
+    overflow-x: hidden;
+    overflow-y: scroll;
+}
+
 td.extra,
 td.extra a {
     font-size: 0.85em;
