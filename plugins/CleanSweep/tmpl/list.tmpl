@@ -135,7 +135,22 @@
             <td>&nbsp;</td>
             <td colspan="4" class="extra">
                 Mapped to:
-                <mt:if name="return_code" eq="301"><a href="<mt:BlogURL><mt:Var name="map">" target="_blank"><mt:Var name="map"></a></mt:if>
+                <mt:if name="return_code" eq="301">
+                    <a href="<mt:If name="map" like="/^http/">
+                            <mt:Ignore>
+                                If the map contains a fully-qualified domain
+                                name, then just use the map.
+                            </mt:Ignore>
+                            <mt:Var name="map">
+                        <mt:Else>
+                            <mt:Ignore>
+                                If the map does *not* contain a fully-qualified
+                                domain name then we can assume it's to redirect
+                                on the current domain.
+                            </mt:Ignore>
+                            <mt:BlogURL regex_replace="/(.*)\/$/","$1"><mt:Var name="map">
+                        </mt:If>" target="_blank"><mt:Var name="map"></a>
+                </mt:if>
                 <mt:if name="return_code" eq="410">Permanently Removed</mt:if>
                 <mt:if name="return_code" eq="403">Forbidden</mt:if>
             </td>
