@@ -157,7 +157,7 @@ sub _guess_intended {
     require MT::FileInfo;
 
     # Test 1: is the target a possible entry ID?
-    if (my ($id) = ($uri =~ /\/(\d+)\.(php|html)$/)) {
+    if (my ($id) = ($uri =~ /\/(\d+)\.(\w+).*$/)) {
         $id =~ s/^0+//; 
         my $fi = MT::FileInfo->load({ entry_id => $id });
         return $fi->url;
@@ -175,7 +175,7 @@ sub _guess_intended {
     # * my-awesome-entry.html
     # * 2011/10/01/my-awesome-entry.html
     # We want to get at the basename in either case.
-    my ($path,$basename,$ext) = ($uri =~ /(.*\/)?([^\.]*)\.(\w+)$/i);
+    my ($path,$basename,$ext) = ($uri =~ /(.*\/)?([^\.]*)\.(\w+).*$/i);
     $basename =~ s/-/_/g;
     require MT::Entry;
     if (my $e = MT::Entry->load({ basename => $basename, blog_id => $blog->id })) {
