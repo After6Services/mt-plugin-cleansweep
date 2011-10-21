@@ -33,11 +33,12 @@ applications:
     cms:
         widgets:
             broken_links:
-                label: 'Broken Link Report'
-                code: CleanSweep::CMS::widget_links
-                template: 'widget/404s.tmpl'
-                set: 'sidebar'
-                singular: 1
+                label:     'Broken Link Report'
+                code:      CleanSweep::CMS::widget_links
+                condition: CleanSweep::CMS::widget_condition
+                template:  'widget/404s.tmpl'
+                set:       'sidebar'
+                singular:  1
         methods:
             404:
                 code: CleanSweep::CMS::report

@@ -237,6 +237,12 @@ sub widget_links {
     $param->{object_loop} = \@link_loop;
 }
 
+# The Dashboard widget should only display on the blog-level dashboard.
+sub widget_condition {
+    my ($page, $scope) = @_;
+    return 1 if ( $scope !~ /system/ );
+}
+
 sub list_404 {
     my $app    = shift;
     my %param  = @_;
