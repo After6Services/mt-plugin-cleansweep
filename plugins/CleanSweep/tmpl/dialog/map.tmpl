@@ -1,6 +1,6 @@
 <mt:setvarblock name="page_title"><__trans phrase="Map 404 to Destination"></mt:setvarblock>
 <mt:setvarblock name="html_head" append="1">
-<link rel="stylesheet" href="<mt:var name="static_uri">plugins/CleanSweep/styles/app.css" type="text/css" />
+<link rel="stylesheet" href="<mt:PluginStaticWebPath component="CleanSweep">styles/app.css" type="text/css" />
 </mt:setvarblock>
 <mt:include name="dialog/header.tmpl">
 <form method="post" action="<mt:var name="script_url">" id="404_map" target="_top">
