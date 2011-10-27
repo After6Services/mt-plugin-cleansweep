@@ -233,7 +233,7 @@ sub widget_links {
 
     $param->{html_head} .= '<link rel="stylesheet" href="' 
         . $app->static_path
-        . 'support/plugins/CleanSweep/styles/app.css" type="text/css" />';
+        . 'support/plugins/cleansweep/styles/app.css" type="text/css" />';
     $param->{object_loop} = \@link_loop;
 }
 
