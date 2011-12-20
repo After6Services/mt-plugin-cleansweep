@@ -57,7 +57,8 @@ Create a page in Movable Type called "URL Not Found". Give it a basename of
 "404". Place whatever personalized message you want that will be displayed to
 your visitors when Clean Sweep is unsuccessful in mapping the request to the
 correct page or destination. Publish the page and remember the complete URL to
-this page on your published blog.
+this page on your published blog. (Alternatively, create an Index template for
+your 404.)
 
 Navigate to the Plugin Settings area for Clean Sweep. Enter the full URL to
 your "URL Not Found" page (as created above) into the "404 URL" configuration
