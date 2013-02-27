@@ -1,4 +1,4 @@
-# Clean Sweep Plugin For Movable Type and Melody
+# Clean Sweep Plugin For Movable Type
 
 By: Byrne Reese <byrne at majordojo dot com>
 
@@ -37,9 +37,6 @@ links to their destination permanently.
 # Prerequisites
 
 * Movable Type 4.x or Melody 1.x
-* [Melody Compatibility
-  Layer](https://github.com/endevver/mt-plugin-melody-compat/downloads/)
-  (required for users of Movable Type only)
 
 
 # Configuration

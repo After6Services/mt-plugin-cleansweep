@@ -19,8 +19,8 @@ sub id { 'cleansweep_cms' }
 # if set, try to find a likely intended URL, or return the custom 404 page.
 # Lastly, log the 404.
 sub report {
-    my $app = shift;
-    my $q = $app->query;
+    my $app  = shift;
+    my $q    = $app->can('query') ? $app->query : $app->param;
     my $blog = $app->blog;
 
     my $host = 'http://' . $ENV{'HTTP_HOST'} . $ENV{'REQUEST_URI'};
@@ -246,7 +246,7 @@ sub widget_condition {
 sub list_404 {
     my $app    = shift;
     my %param  = @_;
-    my $q      = $app->query;
+    my $q      = $app->can('query') ? $app->query : $app->param;
     my $plugin = MT->component('CleanSweep');
     my $author = $app->user;
     # my $list_pref = $app->list_pref('404');
@@ -419,8 +419,8 @@ sub itemset_delete_404s {
 
 sub save_map {
     my $app = shift;
+    my $q   = $app->can('query') ? $app->query : $app->param;
     my $param;
-    my $q = $app->query;
 
     require CleanSweep::Log;
     my $link = CleanSweep::Log->load($q->param('id'));
@@ -446,10 +446,10 @@ sub save_map {
 # Clicking the "map" link causes a popup to appear with the options for how
 # a given URL can be handled.
 sub map {
-    my $app = shift;
+    my $app     = shift;
     my ($param) = @_;
-    my $q = $app->query;
-    my $plugin = MT->component('CleanSweep');
+    my $q       = $app->can('query') ? $app->query : $app->param;
+    my $plugin  = MT->component('CleanSweep');
 
     $param ||= {};
 
@@ -480,8 +480,8 @@ sub map {
 }
 
 sub rules {
-    my $app = shift;
-    my $q = $app->query;
+    my $app    = shift;
+    my $q      = $app->can('query') ? $app->query : $app->param;
     my $plugin = MT->component('CleanSweep');
 
     my $param ||= {};
