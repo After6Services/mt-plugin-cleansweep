@@ -373,6 +373,7 @@ sub filter_umapped_uris {
     $terms->{return_code} = \' IS NULL';
 }
 
+# Click the "reset" link on the listing screen.
 sub itemset_reset_404s {
     my ($app) = @_;
     $app->validate_magic or return;
@@ -387,7 +388,10 @@ sub itemset_reset_404s {
     }
 
     my $cgi = $app->{cfg}->CGIPath . $app->{cfg}->AdminScript;
-    $app->redirect("$cgi?__mode=list_404s&blog_id=".$app->blog->id."&uri_reset=1");
+    $app->redirect(
+        "$cgi?__mode=list&_type=cleansweep_log&blog_id=" . $app->blog->id
+        . "&uri_reset=1"
+    );
 }
 
 sub itemset_delete_404s {
@@ -414,7 +418,10 @@ sub itemset_delete_404s {
     }
 
     my $cgi = $app->{cfg}->CGIPath . $app->{cfg}->AdminScript;
-    $app->redirect("$cgi?__mode=list_404s&blog_id=".$app->blog->id."&uri_delete=1");
+    $app->redirect(
+        "$cgi?__mode=list&_type=cleansweep_log&blog_id=" . $app->blog->id
+        . "&uri_delete=1"
+    );
 }
 
 sub save_map {
@@ -436,10 +443,8 @@ sub save_map {
     if ($q->param('return_code') eq "301") {
         $link->map($q->param('destination'));
     }
-    $link->save or return $app->error( $link->errstr );
+    $link->save or die $app->error( $link->errstr );
 
-    #my $cgi = $app->{cfg}->CGIPath . $app->{cfg}->AdminScript;
-    #$app->redirect("$cgi?__mode=list_404s&blog_id=".$app->blog->id."&map_saved=1");
     $app->redirect( $q->param('return_to') . '&map_saved=1');
 }
 

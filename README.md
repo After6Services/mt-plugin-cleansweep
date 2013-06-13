@@ -36,7 +36,9 @@ links to their destination permanently.
 
 # Prerequisites
 
-* Movable Type 4.x or Melody 1.x
+* Movable Type 5.1+
+* Movable Type 4.x or Melody 1.x is supported with
+  [version 1.2.3](https://github.com/endevver/mt-plugin-cleansweep/tags).
 
 
 # Configuration
