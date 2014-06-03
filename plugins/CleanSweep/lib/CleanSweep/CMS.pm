@@ -51,8 +51,9 @@ sub report {
     
     # 301 - Moved permanently
     # 302 - Found, but redirect may change
-    # A mapping has been explicitly set for this resource.
-    if ($log->mapping) { 
+    # A mapping has been explicitly set for this resource, but the mapped URL
+    # *does not* match the originating URL (which would cause an endless loop).
+    if ($log->mapping !~ /$target/) {
         $redirect = $log->mapping;
         $app->response_code("301");
     }
@@ -80,15 +81,6 @@ sub report {
         $log->increment();
         $log->save or die $log->errstr;
         $redirect = $config->{'404url'};
-        my $path = _guess_file_path($app,$target);
-        if ($path) {
-                open NOTFOUND, $path;
-                undef $/;
-                my $contents = <NOTFOUND>;
-                close NOTFOUND;
-                $app->response_code("404");
-                return $contents;
-        }
         $app->response_code("404");
 
         _track_referrer({ log_id => $log->id, });
@@ -102,7 +94,6 @@ sub report {
         $redirect = $app->{cfg}->CGIPath . $app->{cfg}->SearchScript 
             . '?IncludeBlogs=' . $blog->id . '&keyword=' . $target;
     }
-
 
     # Finally, redirect the user to the selected page -- whatever it may be.
     $app->redirect($redirect);
@@ -137,17 +128,6 @@ sub _track_referrer {
     $referrer->save or die $referrer->errstr;
 }
 
-sub _guess_file_path {
-    my $app = shift;
-    my ($uri) = @_;
-    my $blog = $app->blog;
-    require MT::FileInfo;
-    $uri =~ s!^http://[^/]*/!!;
-    if (my $fi = MT::FileInfo->load({ url => "/$uri" })) {
-        return $fi->file_path;
-    }
-}
-
 # Try to guess the intended URL. The accessed URL is parsed to try to
 # determine what the intended page might be.
 sub _guess_intended {
@@ -167,7 +147,14 @@ sub _guess_intended {
     my $uri_tmp = $uri;
     $uri_tmp =~ s/_/-/g;
     if (my $fi = MT::FileInfo->load({ url => "/$uri_tmp" })) {
-        return $fi->url;
+        if ( $fi->entry_id ) {
+            my $entry = $app->model('entry')->exist({
+                id     =>$fi->entry_id,
+                status => $app->model('entry')->RELEASE(), # Must be published
+                class  => '*', # Entry or Page
+            });
+            return $fi->url if $entry;
+        }
     }
 
     # Test 3: look for entry with same basename
@@ -177,11 +164,13 @@ sub _guess_intended {
     # We want to get at the basename in either case.
     my ($path,$basename,$ext) = ($uri =~ /(.*\/)?([^\.]*)\.(\w+).*$/i);
     $basename =~ s/-/_/g;
-    require MT::Entry;
-    if (my $e = MT::Entry->load({ basename => $basename, blog_id => $blog->id })) {
-        my $fi = MT::FileInfo->load({ entry_id => $e->id });
-        return $fi->url;
-    }
+    my $entry = $app->model('entry')->load({
+        basename => $basename,
+        blog_id  => $blog->id,
+        status   => $app->model('entry')->RELEASE(), # Must be published
+        class    => '*', # Entry or Page
+    });
+    return $entry->permalink if $entry;
 
     return undef;
 }
