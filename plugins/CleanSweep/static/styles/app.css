@@ -27,11 +27,15 @@
 
 /* Mapping popup dialog */
 .radio-option {
-    min-height: 30px;
+    float: left;
+    width: 100%;
+    margin-bottom: 10px;
 }
 
 .radio,
-.radio-label { float: left; }
+.radio-label {
+    float: left;
+}
 .radio { padding: 2px 5px 0px 0px; } 
 
 #uri-field .listing {
