@@ -23,7 +23,7 @@ sub report {
     my $q    = $app->can('query') ? $app->query : $app->param;
     my $blog = $app->blog;
 
-    my $host = 'http://' . $ENV{'HTTP_HOST'} . $ENV{'REQUEST_URI'};
+    my $host = ( $ENV{'HTTPS'} && $ENV{'HTTPS'} eq 'on' ? 'https://' : 'http://' ) . $ENV{'HTTP_HOST'} . $ENV{'REQUEST_URI'};
     my $base = $blog->site_url;
     # Add the trailing slash, if needed.
     $base =~ s!(.*?)\/?$!$1\/!;
