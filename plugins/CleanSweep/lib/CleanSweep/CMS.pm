@@ -53,7 +53,7 @@ sub report {
     # 302 - Found, but redirect may change
     # A mapping has been explicitly set for this resource, but the mapped URL
     # *does not* match the originating URL (which would cause an endless loop).
-    if ($log->mapping !~ /$target/) {
+    if ($log->mapping && $log->mapping !~ /$target/) {
         $redirect = $log->mapping;
         $app->response_code("301");
     }
