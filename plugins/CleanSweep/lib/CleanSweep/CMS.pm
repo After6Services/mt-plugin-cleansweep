@@ -23,7 +23,7 @@ sub report {
     my $q    = $app->can('query') ? $app->query : $app->param;
     my $blog = $app->blog;
 
-    my $host = 'http://' . $ENV{'HTTP_HOST'} . $ENV{'REQUEST_URI'};
+    my $host = ( $ENV{'HTTPS'} && $ENV{'HTTPS'} eq 'on' ? 'https://' : 'http://' ) . $ENV{'HTTP_HOST'} . $ENV{'REQUEST_URI'};
     my $base = $blog->site_url;
     # Add the trailing slash, if needed.
     $base =~ s!(.*?)\/?$!$1\/!;
@@ -53,7 +53,7 @@ sub report {
     # 302 - Found, but redirect may change
     # A mapping has been explicitly set for this resource, but the mapped URL
     # *does not* match the originating URL (which would cause an endless loop).
-    if ($log->mapping !~ /$target/) {
+    if ($log->mapping && $log->mapping !~ /$target/) {
         $redirect = $log->mapping;
         $app->response_code("301");
     }
@@ -96,7 +96,7 @@ sub report {
     }
 
     # Finally, redirect the user to the selected page -- whatever it may be.
-    $app->redirect($redirect);
+    $app->redirect($redirect.'?target='.$target);
 }
 
 # Record where the visitor came from (the referrer) so that the MT admin can
