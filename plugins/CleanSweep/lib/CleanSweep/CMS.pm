@@ -96,7 +96,9 @@ sub report {
     }
 
     # Finally, redirect the user to the selected page -- whatever it may be.
-    $app->redirect($redirect.'?target='.$target);
+    $redirect .= '?target=' . $target
+        if $config->{'append_request_url'};
+    $app->redirect($redirect);
 }
 
 # Record where the visitor came from (the referrer) so that the MT admin can

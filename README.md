@@ -67,6 +67,8 @@ Also in the Plugin Settings area, make note of the Apache configuration
 directive and place it in your `httpd.conf` or in an `.htaccess` file. Restart
 the web server, if necessary.
 
+Also in Plugin Settings, use the Append Requested URL checkbox to include a
+`target` argument with the original URL.
 
 # Use
 
