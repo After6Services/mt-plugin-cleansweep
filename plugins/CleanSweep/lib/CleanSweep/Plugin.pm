@@ -76,6 +76,17 @@ server.error-handler-404 = "$script?__mode=404&blog_id=$bid"
       </div>
     </div>
     </fieldset>
+    <mtapp:Setting
+        id="file-types"
+        label="Valid File Types"
+        hint="Enter a comma-separated list of file types that Clean Sweep should try to redirect."
+        show_hint="1">
+        <input type="text"
+            name="file_types"
+            id="file_types"
+            value="<mt:Var name="file_types">" />
+    </mtapp:Setting>
+
 EOT
     $tmpl;
 }

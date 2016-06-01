@@ -67,8 +67,15 @@ Also in the Plugin Settings area, make note of the Apache configuration
 directive and place it in your `httpd.conf` or in an `.htaccess` file. Restart
 the web server, if necessary.
 
-Also in Plugin Settings, use the Append Requested URL checkbox to include a
-`target` argument with the original URL.
+Also in Plugin Settings:
+
+* Use the Valid File Types field to specify the types of files Clean Sweep
+  should try to redirect. The extension used for the types of Entries and Pages
+  published by your site are what Clean Sweep is able to best redirect, and this
+  field provides a way to focus on those.
+
+* Use the Append Requested URL checkbox to include a `target` argument with the
+  original URL.
 
 # Use
 

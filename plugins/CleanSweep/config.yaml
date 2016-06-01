@@ -24,6 +24,8 @@ settings:
         scope: blog
     oldsiteroot:
         default: ''
+    file_types:
+        default: 'html,php'
         scope: blog
     append_request_url:
         default: ''

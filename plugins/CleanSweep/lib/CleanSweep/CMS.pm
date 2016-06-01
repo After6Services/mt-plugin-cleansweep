@@ -21,7 +21,29 @@ sub id { 'cleansweep_cms' }
 sub report {
     my $app  = shift;
     my $q    = $app->can('query') ? $app->query : $app->param;
-    my $blog = $app->blog;
+    my $blog = $app->blog
+        if $app->can('blog');
+    $blog = $app->model('blog')->load( $q->param('blog_id') )
+        if !$blog && $q->param('blog_id');
+
+    my $plugin = $app->component('CleanSweep');
+    my $config = $plugin->get_config_hash('blog:'.$blog->id);
+    my $redirect = $config->{'404url'};
+
+    # If this URL isn't in the valid file type list just give up and send the
+    # user to the 404 page. No reason to process file types we don't care about.
+    # (Clean Sweep really only knows about Entry and Page URLs, so there's
+    # likely little reason to try to redirect things like assets, other missing
+    # files, or malformed URLs.
+    my @file_types = split( ',', $config->{'file_types'} );
+    my $request_uri = $ENV{'REQUEST_URI'};
+    if (
+        @file_types
+        && ! grep { $request_uri =~ m/$_/i } @file_types
+    ) {
+        $app->response_code('404');
+        return $app->redirect($redirect);
+    }
 
     my $host = ( $ENV{'HTTPS'} && $ENV{'HTTPS'} eq 'on' ? 'https://' : 'http://' ) . $ENV{'HTTP_HOST'} . $ENV{'REQUEST_URI'};
     my $base = $blog->site_url;
