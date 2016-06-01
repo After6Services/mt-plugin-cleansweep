@@ -7,13 +7,9 @@
 package CleanSweep::CMS;
 
 use strict;
+use warnings;
 use base qw( MT::App );
-use CleanSweep::Plugin;
-
-use MT::Util qw( encode_html format_ts offset_time_list offset_time epoch2ts
-         relative_date is_valid_date );
-
-sub id { 'cleansweep_cms' }
+use MT::Util qw( encode_html format_ts offset_time_list relative_date );
 
 # When a server returns a 404, try to handle it intelligently: use a redirect,
 # if set, try to find a likely intended URL, or return the custom 404 page.
@@ -45,17 +41,18 @@ sub report {
         return $app->redirect($redirect);
     }
 
-    my $host = ( $ENV{'HTTPS'} && $ENV{'HTTPS'} eq 'on' ? 'https://' : 'http://' ) . $ENV{'HTTP_HOST'} . $ENV{'REQUEST_URI'};
+    my $host = (
+            $ENV{'HTTPS'} && $ENV{'HTTPS'} eq 'on'
+            ? 'https://' : 'http://'
+        ) . $ENV{'HTTP_HOST'} . $ENV{'REQUEST_URI'};
     my $base = $blog->site_url;
     # Add the trailing slash, if needed.
     $base =~ s!(.*?)\/?$!$1\/!;
 
     my ($target) = ($host =~ /$base(.*)/);
 
-    require CleanSweep::Log;
-
-    my $log = CleanSweep::Log->load({
-        uri     => $target, 
+    my $log = $app->model('cleansweep_log')->load({
+        uri     => $target,
         blog_id => $blog->id,
     });
 
@@ -68,9 +65,6 @@ sub report {
         $log->occur(0);
     }
 
-    my $config = CleanSweep::Plugin::_read_config($blog->id);
-    my $redirect;
-    
     # 301 - Moved permanently
     # 302 - Found, but redirect may change
     # A mapping has been explicitly set for this resource, but the mapped URL
@@ -83,7 +77,7 @@ sub report {
     # Forbidden (403).
     elsif ($log->return_code) {
         $app->response_code($log->return_code);
-        $redirect = $config->{'404url'};
+        # $redirect already set to the 404 page.
     }
     # Try to guess the URL.
     elsif ($redirect = _guess_intended($app,$target)) {
@@ -102,7 +96,7 @@ sub report {
     elsif ($config->{'404url'}) {
         $log->increment();
         $log->save or die $log->errstr;
-        $redirect = $config->{'404url'};
+        # $redirect already set to the 404 page.
         $app->response_code("404");
 
         _track_referrer({ log_id => $log->id, });
@@ -164,7 +158,8 @@ sub _guess_intended {
     if (my ($id) = ($uri =~ /\/(\d+)\.(\w+).*$/)) {
         $id =~ s/^0+//; 
         my $fi = MT::FileInfo->load({ entry_id => $id });
-        return $fi->url;
+        return $fi->url
+            if $fi;
     }
 
     # Test 2: is the target using underscore when it should be using hyphens?
@@ -172,7 +167,7 @@ sub _guess_intended {
     $uri_tmp =~ s/_/-/g;
     if (my $fi = MT::FileInfo->load({ url => "/$uri_tmp" })) {
         if ( $fi->entry_id ) {
-            my $entry = $app->model('entry')->exist({
+            $entry = $app->model('entry')->exist({
                 id     =>$fi->entry_id,
                 status => $app->model('entry')->RELEASE(), # Must be published
                 class  => '*', # Entry or Page
@@ -188,7 +183,7 @@ sub _guess_intended {
     # We want to get at the basename in either case.
     my ($path,$basename,$ext) = ($uri =~ /(.*\/)?([^\.]*)\.(\w+).*$/i);
     $basename =~ s/-/_/g;
-    my $entry = $app->model('entry')->load({
+    $entry = $app->model('entry')->load({
         basename => $basename,
         blog_id  => $blog->id,
         status   => $app->model('entry')->RELEASE(), # Must be published
@@ -480,8 +475,6 @@ sub map {
     require CleanSweep::Log;
     my $link = CleanSweep::Log->load($q->param('id'));
 
-    # my $config = CleanSweep::Plugin::_read_config($blog->id); 
-
     $param->{base_url}    = $base;
     $param->{uri}         = $link->uri;
     $param->{id}          = $link->id;
@@ -500,20 +493,17 @@ sub map {
 sub rules {
     my $app    = shift;
     my $q      = $app->can('query') ? $app->query : $app->param;
-    my $plugin = MT->component('CleanSweep');
-
+    my $plugin = $app->component('CleanSweep');
+    my $blog   = $app->blog;
+    my $config = $plugin->get_config_hash('blog:'.$blog->id);
+    my $base   = $blog->site_url;
     my $param ||= {};
 
-    my $blog = $app->blog;
-    my $base = $blog->site_url;
 
-    my $args = { 
-        sort      => 'uri', 
+    my $args = {
+        sort      => 'uri',
         direction => 'ascend'
     };
-
-    require MT::Request;
-    my $cfg = plugin()->get_config_hash('blog:'.$blog->id);
 
     require CleanSweep::Log;
     my @links = CleanSweep::Log->load( { blog_id => $app->blog->id }, $args );
@@ -541,16 +531,11 @@ sub rules {
     }
     $param->{object_loop} = \@link_loop;
 
-    my $config = CleanSweep::Plugin::_read_config($app->blog->id); 
     $param->{base_url}  = $base;
     $param->{blog_id}   = $app->blog->id;
-    $param->{webserver} = $cfg->{'webserver'};
+    $param->{webserver} = $config->{'webserver'};
 
     return $plugin->load_tmpl( 'dialog/rules.tmpl', $param);
-}
-
-sub plugin {
-    MT->component('CleanSweep');
 }
 
 1;

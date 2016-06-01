@@ -22,8 +22,6 @@ settings:
     webserver: 
         default: apache
         scope: blog
-    oldsiteroot:
-        default: ''
     file_types:
         default: 'html,php'
         scope: blog
