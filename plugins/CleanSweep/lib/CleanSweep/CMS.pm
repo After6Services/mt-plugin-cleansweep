@@ -201,6 +201,26 @@ sub _guess_intended {
     });
     return $entry->permalink if $entry;
 
+    # Test 3b: look for entries with the same basename in any child blogs.
+    if ( $blog->class eq 'website') {
+        my @child_blog_ids;
+        my $iter = $app->model('blog')->load_iter({
+            parent_id => $blog->id,
+        });
+        while ( my $child_blog = $iter->() ) {
+            push @child_blog_ids, $child_blog->id;
+        }
+        if ( @blog_ids ) {
+            $entry = $app->model('entry')->load({
+                basename => $basename,
+                blog_id  => \@child_blog_ids,
+                status   => $app->model('entry')->RELEASE(), # Must be published
+                class    => '*', # Entry or Page
+            });
+        }
+        return $entry->permalink if $entry;
+    }
+
     # Test 4: Look up the directory tree to see if something else can be served.
     # This option can be enabled/disabled because it may not be helpful,
     # depending upon site architecture.
