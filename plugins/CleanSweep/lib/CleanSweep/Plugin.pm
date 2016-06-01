@@ -71,6 +71,39 @@ sub blogconf_template {
             value="<mt:Var name="file_types">" />
     </mtapp:Setting>
 
+    <mtapp:Setting
+        id="traverse-url"
+        label="Traverse URL">
+        <input type="checkbox"
+            name="traverse_url"
+            id="traverse_url"
+            value="1"
+            <mt:If name="traverse_url">checked</mt:If> />
+        <label for="traverse_url">
+            When trying to find a URL for
+            <code>http://example.com/a/b/c/d.html</code>, for example, traverse
+            up the URL to redirect to <code>http://example.com/a/b/c/</code> or
+            <code>http://example.com/a/b/</code>, if those URLs exist. This may
+            or may not be useful depending upon site architecture and is done as
+            a last-ditch effort to find a reasonable page to redirect to.
+        </label>
+    </mtapp:Setting>
+
+    <mtapp:Setting
+        id="append-requested-url"
+        label="Append Requested URL">
+        <input type="checkbox"
+            name="append_request_url"
+            id="append_request_url"
+            value="1"
+            <mt:If name="append_request_url">checked</mt:If> />
+        <label for="append_request_url">
+            Include the requested URL as an argument to the returned URL. For
+            example, if the URL requested is <code>http://example.com/my/page.html</code>
+            is missing and the page redirects to the 404, the following URL
+            would be returned: <code>http://example.com/404.html?target=my/page.html</code>
+        </label>
+    </mtapp:Setting>
 EOT
     $tmpl;
 }

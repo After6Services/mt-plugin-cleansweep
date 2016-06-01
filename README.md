@@ -74,6 +74,13 @@ Also in Plugin Settings:
   published by your site are what Clean Sweep is able to best redirect, and this
   field provides a way to focus on those.
 
+* Clean Sweep can guess at a helpful URL using the Traverse URL option. When
+  trying to find a URL for `http://example.com/a/b/c/d.html`, for example,
+  traverse up the URL to redirect to `http://example.com/a/b/c/` or
+  `http://example.com/a/b/`, if those URLs exist. This may or may not be useful
+  depending upon site architecture and is done as a last-ditch effort to find a
+  reasonable page to redirect to.
+
 * Use the Append Requested URL checkbox to include a `target` argument with the
   original URL.
 

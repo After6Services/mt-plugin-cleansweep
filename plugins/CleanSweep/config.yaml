@@ -22,6 +22,9 @@ settings:
     webserver: 
         default: apache
         scope: blog
+    traverse_url:
+        default: 1
+        scope: blog
     file_types:
         default: 'html,php'
         scope: blog

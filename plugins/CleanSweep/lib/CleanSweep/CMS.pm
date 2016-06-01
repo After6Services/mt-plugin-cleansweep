@@ -80,7 +80,14 @@ sub report {
         # $redirect already set to the 404 page.
     }
     # Try to guess the URL.
-    elsif ($redirect = _guess_intended($app,$target)) {
+    elsif (
+        $redirect = _guess_intended({
+            app    => $app,
+            target => $target,
+            blog   => $blog,
+            config => $config
+        })
+    ) {
         # We want to record that the URL was not found this one time, but a
         # redirect was created for future mappings.
         $log->increment();
@@ -149,9 +156,12 @@ sub _track_referrer {
 # Try to guess the intended URL. The accessed URL is parsed to try to
 # determine what the intended page might be.
 sub _guess_intended {
-    my $app = shift;
-    my ($uri) = @_;
-    my $blog = $app->blog;
+    my ($arg_ref) = @_;
+    my $app    = $arg_ref->{app};
+    my $uri    = $arg_ref->{target};
+    my $blog   = $arg_ref->{blog};
+    my $config = $arg_ref->{config};
+    my $entry;
     require MT::FileInfo;
 
     # Test 1: is the target a possible entry ID?
@@ -190,6 +200,22 @@ sub _guess_intended {
         class    => '*', # Entry or Page
     });
     return $entry->permalink if $entry;
+
+    # Test 4: Look up the directory tree to see if something else can be served.
+    # This option can be enabled/disabled because it may not be helpful,
+    # depending upon site architecture.
+    if ( $config->{traverse_url} ) {
+        my $url = $blog->site_url . $uri;
+        # Chop off the end of the URL so that the parent directory can be
+        # checked. Clean Sweep will then redirect to that URL. If that URL
+        # doesn't exist then they'll end up back here again and check for a
+        # parent or be back at the site URL.
+        # http://example.com/a/b/c/d.html
+        # http://example.com/a/b/c/
+        $url =~ s/^(.*\/).+/$1/
+            if $url ne $blog->site_path;
+        return $url;
+    }
 
     return undef;
 }
