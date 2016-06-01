@@ -21,6 +21,7 @@ sub report {
         if $app->can('blog');
     $blog = $app->model('blog')->load( $q->param('blog_id') )
         if !$blog && $q->param('blog_id');
+    die $app->error('Blog ID not specified!') if !$blog;
 
     my $plugin = $app->component('CleanSweep');
     my $config = $plugin->get_config_hash('blog:'.$blog->id);
@@ -210,7 +211,7 @@ sub _guess_intended {
         while ( my $child_blog = $iter->() ) {
             push @child_blog_ids, $child_blog->id;
         }
-        if ( @blog_ids ) {
+        if ( @child_blog_ids ) {
             $entry = $app->model('entry')->load({
                 basename => $basename,
                 blog_id  => \@child_blog_ids,
